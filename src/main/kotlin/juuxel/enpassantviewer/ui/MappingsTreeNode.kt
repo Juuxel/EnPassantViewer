@@ -5,7 +5,7 @@ import java.util.*
 import javax.swing.tree.TreeNode
 
 sealed class MappingsTreeNode : TreeNode {
-    class Root(mappings: ProjectMapping) : MappingsTreeNode() {
+    class Root(val mappings: ProjectMapping) : MappingsTreeNode() {
         private val packages =
             mappings.classes.map { it.from.substringBeforeLast('.', "<root package>") }
                 .distinct().sorted()

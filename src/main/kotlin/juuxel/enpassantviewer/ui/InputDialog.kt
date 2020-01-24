@@ -33,11 +33,12 @@ class InputDialog(prompt: String, properties: Map<String, String>) : JDialog() {
 
         contentPane.add(mainPanel, BorderLayout.CENTER)
         contentPane.add(buttonPanel, BorderLayout.SOUTH)
+
+        pack()
     }
 
     fun requestInput(): Map<String, String> {
         isVisible = true
-        pack()
         return fields.mapValues { (_, field) -> field.text }
     }
 }

@@ -10,11 +10,11 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
     fun run(tinyFile: File): ProjectMapping {
         val tree = tinyFile.bufferedReader().use { reader -> TinyMappingFactory.loadWithDetection(reader) }
         val namespaces = tree.metadata.namespaces
-        val defaultTargetNamespace = if ("named" in namespaces) "named" else "intermediary"
-        val defaultInputNamespace = if (defaultTargetNamespace == "named") "intermediary" else "official"
+        val defaultInputNamespace = namespaces.first()
+        val defaultTargetNamespace = namespaces.last()
 
         val input = InputDialog(
-            "Select namespaces:",
+            "<html><h1>Select namespaces",
             mapOf(
                 "Input namespace" to defaultInputNamespace,
                 "Target namespace" to defaultTargetNamespace
