@@ -9,12 +9,17 @@ sealed class MappingsTreeNode : TreeNode {
         private val packages =
             if (createPackageTree) createPackageTree()
             else mappings.classes.map { it.from.substringBeforeLast('.', "<root package>") }
-                    .distinct().sorted()
-                    .map { Package(this, it, { emptyList() }, mappings.classes.filter { c -> c.from.substringBeforeLast('.', "<root package>") == it }) }
-                    .let { Vector(it) }
+                .distinct().sorted()
+                .map {
+                    Package(
+                        this, it,
+                        mappings.classes.filter { c -> c.from.substringBeforeLast('.', "<root package>") == it }
+                    )
+                }
+                .let { Vector(it) }
 
         override fun getParent() = null
-        override fun children(): Enumeration<*> = packages.elements()
+        override fun children(): Enumeration<Package> = packages.elements()
         override fun getChildCount() = packages.size
         override fun getChildAt(childIndex: Int): TreeNode? = packages[childIndex]
         override fun getIndex(node: TreeNode) = packages.indexOf(node)
@@ -48,12 +53,16 @@ sealed class MappingsTreeNode : TreeNode {
             val classes: MutableList<ClassMapping> = ArrayList()
         ) {
             fun toImmutableTree(parent: MappingsTreeNode): Package =
-                Package(parent, name, { self -> subpackages.values.map { it.toImmutableTree(self) } }, classes)
+                Package(parent, name, classes) { self -> subpackages.values.map { it.toImmutableTree(self) } }
         }
     }
 
-    class Package(private val parent: MappingsTreeNode?, val name: String, subpackages: (Package) -> List<Package>, private val classes: List<ClassMapping>) :
-        MappingsTreeNode() {
+    class Package(
+        private val parent: MappingsTreeNode?,
+        val name: String,
+        private val classes: List<ClassMapping>,
+        subpackages: (Package) -> List<Package> = { emptyList() }
+    ) : MappingsTreeNode() {
         private val packageChildren = subpackages(this).sortedBy { it.name }
         private val classChildren = classes.sortedBy { it.from }.map { Type(this, it) }
         private val children = Vector(packageChildren + classChildren)
@@ -67,16 +76,15 @@ sealed class MappingsTreeNode : TreeNode {
         override fun isLeaf() = false
 
         private fun transferContentsToParent(target: Package): List<Package> =
-            packageChildren.map { Package(target, it.name, it::transferContentsToParent, it.classes) }
+            packageChildren.map { Package(target, it.name, it.classes, it::transferContentsToParent) }
 
         fun simplify(): Package =
             if (children.size == 1 && classChildren.isEmpty()) {
                 val child = packageChildren.first()
                 Package(
                     parent, "$name.${child.name}",
-                    { child.transferContentsToParent(it).map { p -> p.simplify() } },
                     child.classes
-                )
+                ) { child.transferContentsToParent(it).map { p -> p.simplify() } }
             } else this
 
         override fun toString() = name

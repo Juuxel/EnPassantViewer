@@ -4,11 +4,11 @@ import io.github.cottonmc.proguardparser.*
 import juuxel.enpassantviewer.ui.InputDialog
 import net.fabricmc.mapping.tree.ClassDef
 import net.fabricmc.mapping.tree.TinyMappingFactory
-import java.io.File
+import java.io.BufferedReader
 
 class ComposeWithTiny(private val mappings: ProjectMapping) {
-    fun run(tinyFile: File): ProjectMapping {
-        val tree = tinyFile.bufferedReader().use { reader -> TinyMappingFactory.loadWithDetection(reader) }
+    fun run(tinyReader: BufferedReader): ProjectMapping {
+        val tree = TinyMappingFactory.loadWithDetection(tinyReader)
         val namespaces = tree.metadata.namespaces
         val defaultInputNamespace = namespaces.first()
         val defaultTargetNamespace = namespaces.last()

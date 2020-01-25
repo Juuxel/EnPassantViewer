@@ -1,10 +1,27 @@
 package juuxel.enpassantviewer.ui
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.swing.Swing
 import javax.swing.*
 
-class ProgressDialog(parent: JFrame, message: String) : JDialog(parent) {
+interface StepManager {
+    var step: String
+}
+
+class ProgressDialog(parent: JFrame, message: String) : JDialog(parent), StepManager {
+    private val label = JLabel(message)
+
+    override var step = message
+        set(value) {
+            field = value
+            runBlocking(Dispatchers.Swing) {
+                label.text = value
+            }
+        }
+
     init {
         title = message
         isModal = true
@@ -12,7 +29,7 @@ class ProgressDialog(parent: JFrame, message: String) : JDialog(parent) {
         contentPane = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
 
-            add(JLabel(message))
+            add(label)
             add(JProgressBar().apply { isIndeterminate = true })
         }
 
@@ -20,10 +37,10 @@ class ProgressDialog(parent: JFrame, message: String) : JDialog(parent) {
     }
 
     companion object {
-        fun show(parent: JFrame, message: String, fn: () -> Unit) {
+        fun show(parent: JFrame, message: String, fn: StepManager.() -> Unit) {
             val dialog = ProgressDialog(parent, message)
             GlobalScope.launch {
-                ErrorReporter.run(parent, "Error: $message", fn)
+                ErrorReporter.run(parent, "Error: $message") { fn(dialog) }
                 dialog.isVisible = false
             }
             dialog.isVisible = true

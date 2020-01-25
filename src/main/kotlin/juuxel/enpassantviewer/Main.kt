@@ -1,15 +1,15 @@
 package juuxel.enpassantviewer
 
+import com.alee.laf.WebLookAndFeel
 import juuxel.enpassantviewer.ui.ViewerWindow
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
-import javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 fun main() {
-    UIManager.setLookAndFeel(NimbusLookAndFeel())
+    //UIManager.setLookAndFeel(NimbusLookAndFeel())
 
-    val window = ViewerWindow()
     SwingUtilities.invokeLater {
+        WebLookAndFeel.install()
+        val window = ViewerWindow()
         window.isVisible = true
     }
 }
