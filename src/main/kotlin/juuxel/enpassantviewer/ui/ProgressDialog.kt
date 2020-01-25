@@ -23,7 +23,7 @@ class ProgressDialog(parent: JFrame, message: String) : JDialog(parent) {
         fun show(parent: JFrame, message: String, fn: () -> Unit) {
             val dialog = ProgressDialog(parent, message)
             GlobalScope.launch {
-                fn()
+                ErrorReporter.run(parent, "Error: $message", fn)
                 dialog.isVisible = false
             }
             dialog.isVisible = true

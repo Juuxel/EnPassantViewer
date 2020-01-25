@@ -3,15 +3,14 @@ package juuxel.enpassantviewer.ui
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings
 import io.github.cottonmc.proguardparser.toProguardMappings
+import juuxel.enpassantviewer.analysis.FindLostClasses
+import juuxel.enpassantviewer.analysis.FindUnobfuscatedClasses
 import juuxel.enpassantviewer.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.transformation.Invert
-import org.jdesktop.swingx.JXErrorPane
-import org.jdesktop.swingx.error.ErrorInfo
 import java.awt.Dimension
 import java.awt.Event
 import java.awt.event.KeyEvent
 import java.io.File
-import java.util.logging.Level
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.tree.DefaultTreeModel
@@ -55,22 +54,15 @@ class ViewerWindow : JFrame() {
         val composeWithTiny = action("Compose with Tiny") {
             val result = fileChooser.showOpenDialog(this)
             if (result == JFileChooser.APPROVE_OPTION) {
-                try {
-                    ProgressDialog.show(this, "Composing mappings") {
-                        val newMappings = ComposeWithTiny(currentMappings).run(fileChooser.selectedFile)
-                        setMappings(newMappings)
-                    }
-                } catch (e: Throwable) {
-                    JXErrorPane.showDialog(this, ErrorInfo("Error while composing with tiny", null, null, null, e, Level.SEVERE, null))
+                ProgressDialog.show(this, "Composing mappings") {
+                    val newMappings = ComposeWithTiny(currentMappings).run(fileChooser.selectedFile)
+                    setMappings(newMappings)
                 }
             }
         }
         val invert = action("Invert") {
-            try {
+            ErrorReporter.run(this, "Error while inverting mappings") {
                 setMappings(Invert.run(currentMappings))
-            } catch (e: Throwable) {
-                // TODO: Extract this
-                JXErrorPane.showDialog(this, ErrorInfo("Error while composing with tiny", null, null, null, e, Level.SEVERE, null))
             }
         }
 
@@ -82,8 +74,13 @@ class ViewerWindow : JFrame() {
         transformMenu.add(composeTinyButton)
         transformMenu.add(invertButton)
 
+        val analysisMenu = JMenu("Analysis")
+        analysisMenu.add(FindLostClasses { currentMappings })
+        analysisMenu.add(FindUnobfuscatedClasses { currentMappings })
+
         menu.add(fileMenu)
         menu.add(transformMenu)
+        menu.add(analysisMenu)
         jMenuBar = menu
 
         /*ui.inputMap.let { input ->
@@ -102,23 +99,15 @@ class ViewerWindow : JFrame() {
     }
 
     private fun loadMappings(file: File) {
-        try {
-            ProgressDialog.show(this, "Parsing mappings") {
-                val mappings = parseProguardMappings(file.readLines())
-                setMappings(mappings)
-            }
-        } catch (e: Exception) {
-            JXErrorPane.showDialog(this, ErrorInfo("Error while parsing mappings", null, null, null, e, Level.SEVERE, null))
+        ProgressDialog.show(this, "Parsing mappings") {
+            val mappings = parseProguardMappings(file.readLines())
+            setMappings(mappings)
         }
     }
 
     private fun saveMappings(file: File) {
-        try {
-            ProgressDialog.show(this, "Saving mappings") {
-                file.writeText(currentMappings.toProguardMappings().joinToString(separator = "", transform = { "$it\n" }))
-            }
-        } catch (e: Exception) {
-            JXErrorPane.showDialog(this, ErrorInfo("Error while saving mappings", null, null, null, e, Level.SEVERE, null))
+        ProgressDialog.show(this, "Saving mappings") {
+            file.writeText(currentMappings.toProguardMappings().joinToString(separator = "", transform = { "$it\n" }))
         }
     }
 
