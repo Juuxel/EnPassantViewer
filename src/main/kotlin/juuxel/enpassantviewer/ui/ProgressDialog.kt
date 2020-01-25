@@ -5,21 +5,30 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.swing.Swing
+import java.awt.GridLayout
+import java.util.*
 import javax.swing.*
 
 interface StepManager {
+    /**
+     * The current top entry of the step stack.
+     */
     var step: String
+
+    fun pushStep(step: String)
+    fun popStep()
 }
 
 class ProgressDialog(parent: JFrame, message: String) : JDialog(parent), StepManager {
     private val label = JLabel(message)
 
-    override var step = message
+    private val stepStack: Deque<String> = ArrayDeque()
+
+    override var step: String
+        get() = stepStack.pollLast() ?: "Unknown"
         set(value) {
-            field = value
-            runBlocking(Dispatchers.Swing) {
-                label.text = value
-            }
+            if (stepStack.size > 1) popStep()
+            pushStep(value)
         }
 
     init {
@@ -27,13 +36,31 @@ class ProgressDialog(parent: JFrame, message: String) : JDialog(parent), StepMan
         isModal = true
 
         contentPane = JPanel().apply {
-            layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            layout = GridLayout(0, 1)
 
             add(label)
             add(JProgressBar().apply { isIndeterminate = true })
         }
 
+        stepStack.push(message)
+
         pack()
+    }
+
+    override fun pushStep(step: String) {
+        stepStack.push(step)
+        runBlocking(Dispatchers.Swing) {
+            label.text = step
+            pack()
+        }
+    }
+
+    override fun popStep() {
+        stepStack.pop()
+        runBlocking(Dispatchers.Swing) {
+            label.text = step
+            pack()
+        }
     }
 
     companion object {
