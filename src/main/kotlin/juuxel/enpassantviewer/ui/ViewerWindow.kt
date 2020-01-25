@@ -5,9 +5,9 @@ import io.github.cottonmc.proguardparser.parseProguardMappings
 import io.github.cottonmc.proguardparser.toProguardMappings
 import juuxel.enpassantviewer.analysis.FindLostClasses
 import juuxel.enpassantviewer.analysis.FindUnobfuscatedClasses
-import juuxel.enpassantviewer.mappings.OpenLatestMojmap
-import juuxel.enpassantviewer.transformation.ComposeWithLatestIntermediary
-import juuxel.enpassantviewer.transformation.ComposeWithLatestYarn
+import juuxel.enpassantviewer.mappings.OpenMojmap
+import juuxel.enpassantviewer.transformation.ComposeWithIntermediary
+import juuxel.enpassantviewer.transformation.ComposeWithYarn
 import juuxel.enpassantviewer.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.transformation.Invert
 import juuxel.enpassantviewer.view.RebuildAsSeparate
@@ -53,8 +53,7 @@ class ViewerWindow : JFrame() {
         val saveButton = JMenuItem(save)
         saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
-        fileMenu.add(OpenLatestMojmap(this, true) { setMappings(it) })
-        fileMenu.add(OpenLatestMojmap(this, false) { setMappings(it) })
+        fileMenu.add(OpenMojmap(this, this::setMappings))
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")
@@ -85,10 +84,8 @@ class ViewerWindow : JFrame() {
         invertButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK)
 
         transformMenu.add(composeTinyButton)
-        transformMenu.add(ComposeWithLatestIntermediary(this, true, { currentMappings }, this::setMappings))
-        transformMenu.add(ComposeWithLatestIntermediary(this, false, { currentMappings }, this::setMappings))
-        transformMenu.add(ComposeWithLatestYarn(this, true, { currentMappings }, this::setMappings))
-        transformMenu.add(ComposeWithLatestYarn(this, false, { currentMappings }, this::setMappings))
+        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, this::setMappings))
+        transformMenu.add(ComposeWithYarn(this, { currentMappings }, this::setMappings))
         transformMenu.add(invertButton)
 
         val analysisMenu = JMenu("Analysis")

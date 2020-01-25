@@ -48,7 +48,7 @@ object MappingCache {
         return versionManifests.getOrPut(version) {
             stepManager?.step = "Downloading version manifest for $version"
             val jankson = Jankson.builder().build()
-            val versionObject = manifest.get(JsonArray::class.java, "versions")!!.find {
+            val versionObject = getManifest(stepManager).get(JsonArray::class.java, "versions")!!.find {
                 it is JsonObject && it[String::class.java, "id"] == version
             } as JsonObject
             val versionManifestUrl = URL(versionObject[String::class.java, "url"])

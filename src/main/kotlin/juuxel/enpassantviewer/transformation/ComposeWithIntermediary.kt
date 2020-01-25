@@ -2,22 +2,26 @@ package juuxel.enpassantviewer.transformation
 
 import io.github.cottonmc.proguardparser.ProjectMapping
 import juuxel.enpassantviewer.mappings.MappingCache
+import juuxel.enpassantviewer.ui.MappingVersionDialog
 import juuxel.enpassantviewer.ui.ProgressDialog
 import java.awt.event.ActionEvent
 import java.net.URL
-import java.util.zip.InflaterInputStream
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 
-class ComposeWithLatestIntermediary(
+class ComposeWithIntermediary(
     private val frame: JFrame,
-    private val release: Boolean,
     private val mappings: () -> ProjectMapping,
     private val mappingsSetter: (ProjectMapping) -> Unit
-) : AbstractAction("Compose with Latest Intermediary (${if (release) "Release" else "Snapshot"})") {
+) : AbstractAction("Compose with Intermediary") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Intermediary") {
-            val version = if (release) MappingCache.getLatestRelease(this) else MappingCache.getLatestSnapshot(this)
+            val version = when (val version = MappingVersionDialog(frame).requestInput()) {
+                MappingVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
+                MappingVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
+                is MappingVersionDialog.Result.Custom -> version.version
+                MappingVersionDialog.Result.Cancelled -> return@show
+            }
             val yarnUrl = URL("https://raw.githubusercontent.com/FabricMC/intermediary/master/mappings/$version.tiny")
             val composedMappings = yarnUrl.openStream().use { input ->
                 input.bufferedReader().use { reader ->

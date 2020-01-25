@@ -1,10 +1,8 @@
 package juuxel.enpassantviewer.mappings
 
-import blue.endless.jankson.Jankson
-import blue.endless.jankson.JsonArray
-import blue.endless.jankson.JsonObject
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings
+import juuxel.enpassantviewer.ui.MappingVersionDialog
 import juuxel.enpassantviewer.ui.ProgressDialog
 import juuxel.enpassantviewer.ui.StepManager
 import java.awt.event.ActionEvent
@@ -12,17 +10,21 @@ import java.net.URL
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 
-class OpenLatestMojmap(
+class OpenMojmap(
     private val frame: JFrame,
-    private val release: Boolean,
     private val mappingsSetter: (ProjectMapping) -> Unit
-) : AbstractAction("Open Latest Mojmap (${if (release) "Release" else "Snapshot"})") {
+) : AbstractAction("Open Mojmap") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Opening mojmap") { run() }
     }
 
     private fun StepManager.run() {
-        val version = if (release) MappingCache.getLatestRelease(this) else MappingCache.getLatestSnapshot(this)
+        val version = when (val version = MappingVersionDialog(frame).requestInput()) {
+            MappingVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
+            MappingVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
+            is MappingVersionDialog.Result.Custom -> version.version
+            MappingVersionDialog.Result.Cancelled -> return
+        }
         val versionManifest = MappingCache.getVersionManifest(this, version)
         val mojmapUrl = versionManifest
             .getObject("downloads")!!
@@ -30,7 +32,7 @@ class OpenLatestMojmap(
             .get(String::class.java, "url")
             .let { URL(it) }
 
-        step = "Downloading and parsing $release mappings"
+        step = "Downloading and parsing $version mappings"
         val mappings = mojmapUrl.openStream().use { input ->
             input.reader().useLines { parseProguardMappings(it) }
         }
