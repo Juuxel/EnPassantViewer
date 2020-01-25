@@ -29,11 +29,7 @@ class ComposeWithYarn(
             }
             val dataUrl = URL("https://meta.fabricmc.net/v1/versions/mappings/$version")
             val jankson = Jankson.builder().build()
-            val mappingData = dataUrl.openStream().use { input ->
-                input.reader().use { reader ->
-                    jankson.load("""{"value":${reader.readText()}}""")
-                }
-            }.get("value") as JsonArray
+            val mappingData = dataUrl.openStream().use { input -> jankson.loadElement(input) } as JsonArray
             val yarnVersion = mappingData.filterIsInstance<JsonObject>()
                 .maxBy { it.getInt("build", -1) }!!
                 .get(String::class.java, "version")!!

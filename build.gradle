@@ -4,7 +4,7 @@ plugins {
     id 'application'
 }
 
-group = 'io.github.cottonmc'
+group = 'io.github.juuxel'
 version = '1.0.0'
 
 sourceCompatibility = 1.8
@@ -19,6 +19,10 @@ repositories {
         name = "Fabric"
         url = "https://maven.fabricmc.net"
     }
+    maven {
+        name = "Elytra"
+        url = "https://repo.elytradev.com"
+    }
 }
 
 dependencies {
@@ -28,7 +32,7 @@ dependencies {
     implementation "io.github.cottonmc:proguard-mappings-parser:1.5.0"
     implementation "net.fabricmc:tiny-mappings-parser:0.2.1.13"
     implementation "com.google.guava:guava:28.2-jre"
-    implementation "blue.endless:jankson:1.2.0"
+    implementation "blue.endless:jankson:1.2.0-62"
 
     implementation "org.swinglabs.swingx:swingx-all:1.6.5-1"
     implementation "com.weblookandfeel:weblaf-ui:1.2.12"
