@@ -5,12 +5,13 @@ import java.util.*
 import javax.swing.tree.TreeNode
 
 sealed class MappingsTreeNode : TreeNode {
-    class Root(val mappings: ProjectMapping) : MappingsTreeNode() {
+    class Root(val mappings: ProjectMapping, createPackageTree: Boolean = false) : MappingsTreeNode() {
         private val packages =
-            mappings.classes.map { it.from.substringBeforeLast('.', "<root package>") }
-                .distinct().sorted()
-                .map { Package(this, it, mappings.classes.filter { c -> c.from.substringBeforeLast('.', "<root package>") == it }) }
-                .let { Vector(it) }
+            if (createPackageTree) createPackageTree()
+            else mappings.classes.map { it.from.substringBeforeLast('.', "<root package>") }
+                    .distinct().sorted()
+                    .map { Package(this, it, { emptyList() }, mappings.classes.filter { c -> c.from.substringBeforeLast('.', "<root package>") == it }) }
+                    .let { Vector(it) }
 
         override fun getParent() = null
         override fun children(): Enumeration<*> = packages.elements()
@@ -19,14 +20,43 @@ sealed class MappingsTreeNode : TreeNode {
         override fun getIndex(node: TreeNode) = packages.indexOf(node)
         override fun getAllowsChildren() = true
         override fun isLeaf() = false
+
+        private fun createPackageTree(): Vector<Package> {
+            val topLevelTrees = HashMap<String, PackageTree>()
+
+            for (c in mappings.classes) {
+                if ('.' !in c.from) {
+                    topLevelTrees.getOrPut("<root package>") { PackageTree("<root package>") }.classes += c
+                    continue
+                }
+
+                val parts = c.from.split('.').dropLast(1)
+                val targetTree = parts.drop(1)
+                    .fold(topLevelTrees.getOrPut(parts[0]) { PackageTree(parts[0]) }) { acc, s ->
+                        acc.subpackages.getOrPut(s) { PackageTree(s) }
+                    }
+
+                targetTree.classes += c
+            }
+
+            return Vector(topLevelTrees.values.map { it.toImmutableTree(this).simplify() })
+        }
+
+        private data class PackageTree(
+            val name: String,
+            val subpackages: MutableMap<String, PackageTree> = HashMap(),
+            val classes: MutableList<ClassMapping> = ArrayList()
+        ) {
+            fun toImmutableTree(parent: MappingsTreeNode): Package =
+                Package(parent, name, { self -> subpackages.values.map { it.toImmutableTree(self) } }, classes)
+        }
     }
 
-    class Package(private val parent: MappingsTreeNode?, val name: String, classes: List<ClassMapping>) :
+    class Package(private val parent: MappingsTreeNode?, val name: String, subpackages: (Package) -> List<Package>, private val classes: List<ClassMapping>) :
         MappingsTreeNode() {
-        private val children =
-            classes.sortedBy { it.from }
-                .map { Type(this, it) }
-                .let { Vector(it) }
+        private val packageChildren = subpackages(this).sortedBy { it.name }
+        private val classChildren = classes.sortedBy { it.from }.map { Type(this, it) }
+        private val children = Vector(packageChildren + classChildren)
 
         override fun getParent() = parent
         override fun children(): Enumeration<*> = children.elements()
@@ -35,6 +65,19 @@ sealed class MappingsTreeNode : TreeNode {
         override fun getIndex(node: TreeNode) = children.indexOf(node)
         override fun getAllowsChildren() = true
         override fun isLeaf() = false
+
+        private fun transferContentsToParent(target: Package): List<Package> =
+            packageChildren.map { Package(target, it.name, it::transferContentsToParent, it.classes) }
+
+        fun simplify(): Package =
+            if (children.size == 1 && classChildren.isEmpty()) {
+                val child = packageChildren.first()
+                Package(
+                    parent, "$name.${child.name}",
+                    { child.transferContentsToParent(it).map { p -> p.simplify() } },
+                    child.classes
+                )
+            } else this
 
         override fun toString() = name
     }
@@ -64,7 +107,8 @@ sealed class MappingsTreeNode : TreeNode {
         override fun getIndex(node: TreeNode?) = -1
         override fun getAllowsChildren() = false
 
-        override fun toString() = "${method.returnType} ${method.from}(${method.parameters.joinToString()}) → ${method.to}"
+        override fun toString() =
+            "${method.returnType} ${method.from}(${method.parameters.joinToString()}) → ${method.to}"
     }
 
     class Field(private val parent: MappingsTreeNode, val field: FieldMapping) : MappingsTreeNode() {

@@ -7,6 +7,8 @@ import juuxel.enpassantviewer.analysis.FindLostClasses
 import juuxel.enpassantviewer.analysis.FindUnobfuscatedClasses
 import juuxel.enpassantviewer.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.transformation.Invert
+import juuxel.enpassantviewer.view.RebuildAsSeparate
+import juuxel.enpassantviewer.view.RebuildAsTree
 import java.awt.Dimension
 import java.awt.Event
 import java.awt.event.KeyEvent
@@ -50,6 +52,10 @@ class ViewerWindow : JFrame() {
         fileMenu.add(openButton)
         fileMenu.add(saveButton)
 
+        val viewMenu = JMenu("View")
+        viewMenu.add(RebuildAsTree({ currentMappings }, setter = { ui.tree.model = DefaultTreeModel(it) }))
+        viewMenu.add(RebuildAsSeparate({ currentMappings }, setter = { ui.tree.model = DefaultTreeModel(it) }))
+
         val transformMenu = JMenu("Transform")
         val composeWithTiny = action("Compose with Tiny") {
             val result = fileChooser.showOpenDialog(this)
@@ -79,6 +85,7 @@ class ViewerWindow : JFrame() {
         analysisMenu.add(FindUnobfuscatedClasses { currentMappings })
 
         menu.add(fileMenu)
+        menu.add(viewMenu)
         menu.add(transformMenu)
         menu.add(analysisMenu)
         jMenuBar = menu
