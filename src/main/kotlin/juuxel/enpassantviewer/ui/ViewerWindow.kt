@@ -2,6 +2,7 @@ package juuxel.enpassantviewer.ui
 
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings
+import io.github.cottonmc.proguardparser.toProguardMappings
 import juuxel.enpassantviewer.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.transformation.Invert
 import org.jdesktop.swingx.JXErrorPane
@@ -36,9 +37,19 @@ class ViewerWindow : JFrame() {
             }
         }
 
+        val save = action("Save") {
+            val result = fileChooser.showSaveDialog(this)
+            if (result == JFileChooser.APPROVE_OPTION) {
+                saveMappings(fileChooser.selectedFile)
+            }
+        }
+
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
+        val saveButton = JMenuItem(save)
+        saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
+        fileMenu.add(saveButton)
 
         val transformMenu = JMenu("Transform")
         val composeWithTiny = action("Compose with Tiny") {
@@ -98,6 +109,16 @@ class ViewerWindow : JFrame() {
             }
         } catch (e: Exception) {
             JXErrorPane.showDialog(this, ErrorInfo("Error while parsing mappings", null, null, null, e, Level.SEVERE, null))
+        }
+    }
+
+    private fun saveMappings(file: File) {
+        try {
+            ProgressDialog.show(this, "Saving mappings") {
+                file.writeText(currentMappings.toProguardMappings().joinToString(separator = "", transform = { "$it\n" }))
+            }
+        } catch (e: Exception) {
+            JXErrorPane.showDialog(this, ErrorInfo("Error while saving mappings", null, null, null, e, Level.SEVERE, null))
         }
     }
 

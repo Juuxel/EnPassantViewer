@@ -50,7 +50,7 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
             "void" -> "V"
             else -> when {
                 type.endsWith("[]") -> "[${typeToDescriptor(type.substringBeforeLast('['))}"
-                else -> "L${(mappings.classes.find { it.from == type }?.to ?: type).replace('.', '/')};"
+                else -> "L${(mappings.findClassOrNull(type)?.to ?: type).replace('.', '/')};"
             }
         }
 
