@@ -2,14 +2,12 @@ package juuxel.enpassantviewer
 
 import com.alee.laf.WebLookAndFeel
 import juuxel.enpassantviewer.ui.ViewerWindow
-import javax.swing.SwingUtilities
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 
-fun main() {
-    //UIManager.setLookAndFeel(NimbusLookAndFeel())
-
-    SwingUtilities.invokeLater {
-        WebLookAndFeel.install()
-        val window = ViewerWindow()
-        window.isVisible = true
-    }
+suspend fun main() = withContext(Dispatchers.Swing) {
+    WebLookAndFeel.install()
+    val window = ViewerWindow()
+    window.isVisible = true
 }
