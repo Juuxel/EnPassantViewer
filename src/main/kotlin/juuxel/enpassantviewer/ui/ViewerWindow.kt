@@ -10,8 +10,7 @@ import juuxel.enpassantviewer.transformation.ComposeWithIntermediary
 import juuxel.enpassantviewer.transformation.ComposeWithYarn
 import juuxel.enpassantviewer.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.transformation.Invert
-import juuxel.enpassantviewer.view.RebuildAsSeparate
-import juuxel.enpassantviewer.view.RebuildAsTree
+import juuxel.enpassantviewer.view.ViewRebuildAction
 import java.awt.Dimension
 import java.awt.Event
 import java.awt.event.KeyEvent
@@ -57,8 +56,29 @@ class ViewerWindow : JFrame() {
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")
-        viewMenu.add(RebuildAsTree({ currentMappings }, setter = { ui.tree.model = DefaultTreeModel(it) }))
-        viewMenu.add(RebuildAsSeparate({ currentMappings }, setter = { ui.tree.model = DefaultTreeModel(it) }))
+        val viewModeGroup = ButtonGroup()
+
+        fun createViewRebuildButton(viewMode: UI.TreeView) =
+            JRadioButtonMenuItem(
+                ViewRebuildAction(
+                    mappings = { currentMappings },
+                    setter = { tree, mode ->
+                        ui.tree.model = DefaultTreeModel(tree)
+                        ui.treeView = mode
+                    },
+                    viewMode = viewMode
+                )
+            )
+
+        val separateButton = createViewRebuildButton(UI.TreeView.Separate)
+        val treeButton = createViewRebuildButton(UI.TreeView.Tree)
+
+        viewModeGroup.add(treeButton)
+        viewModeGroup.add(separateButton)
+        separateButton.isSelected = true
+
+        viewMenu.add(separateButton)
+        viewMenu.add(treeButton)
 
         val transformMenu = JMenu("Transform")
         val composeWithTiny = action("Compose with Tiny") {
@@ -128,6 +148,6 @@ class ViewerWindow : JFrame() {
 
     private fun setMappings(mappings: ProjectMapping) {
         currentMappings = mappings
-        ui.tree.model = DefaultTreeModel(MappingsTreeNode.Root(mappings))
+        ui.tree.model = DefaultTreeModel(MappingsTreeNode.Root(mappings, ui.treeView.createPackageTree))
     }
 }
