@@ -1,4 +1,4 @@
-package juuxel.enpassantviewer.analysis
+package juuxel.enpassantviewer.action.analysis
 
 import io.github.cottonmc.proguardparser.*
 import juuxel.enpassantviewer.ui.MappingsTreeNode

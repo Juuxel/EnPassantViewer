@@ -1,4 +1,4 @@
-package juuxel.enpassantviewer.mappings
+package juuxel.enpassantviewer.action.mappings
 
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings

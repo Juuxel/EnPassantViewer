@@ -1,4 +1,4 @@
-package juuxel.enpassantviewer.transformation
+package juuxel.enpassantviewer.action.transformation
 
 import io.github.cottonmc.proguardparser.*
 import juuxel.enpassantviewer.ui.InputDialog

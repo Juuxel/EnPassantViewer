@@ -1,7 +1,7 @@
-package juuxel.enpassantviewer.transformation
+package juuxel.enpassantviewer.action.transformation
 
 import io.github.cottonmc.proguardparser.ProjectMapping
-import juuxel.enpassantviewer.mappings.MappingCache
+import juuxel.enpassantviewer.action.mappings.MappingCache
 import juuxel.enpassantviewer.ui.MappingVersionDialog
 import juuxel.enpassantviewer.ui.ProgressDialog
 import java.awt.event.ActionEvent

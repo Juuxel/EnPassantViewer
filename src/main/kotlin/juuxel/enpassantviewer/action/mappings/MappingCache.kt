@@ -1,4 +1,4 @@
-package juuxel.enpassantviewer.mappings
+package juuxel.enpassantviewer.action.mappings
 
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonArray
