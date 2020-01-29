@@ -27,7 +27,7 @@ class ComposeWithYarn(
                 is MappingVersionDialog.Result.Custom -> version.version
                 MappingVersionDialog.Result.Cancelled -> return@show
             }
-            val dataUrl = URL("https://meta.fabricmc.net/v1/versions/mappings/$version")
+            val dataUrl = URL("https://meta.fabricmc.net/v2/versions/yarn/$version")
             val jankson = Jankson.builder().build()
             val mappingData = dataUrl.openStream().use { input -> jankson.loadElement(input) } as JsonArray
             val yarnVersion = mappingData.filterIsInstance<JsonObject>()
