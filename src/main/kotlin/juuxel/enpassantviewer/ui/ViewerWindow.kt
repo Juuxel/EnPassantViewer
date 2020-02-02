@@ -19,6 +19,7 @@ import javax.swing.KeyStroke
 import javax.swing.tree.DefaultTreeModel
 import juuxel.enpassantviewer.action.analysis.FindLostClasses
 import juuxel.enpassantviewer.action.analysis.FindUnobfuscatedClasses
+import juuxel.enpassantviewer.action.analysis.HowManyInWorld
 import juuxel.enpassantviewer.action.mappings.OpenMojmap
 import juuxel.enpassantviewer.action.transformation.ComposeWithIntermediary
 import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
@@ -118,6 +119,7 @@ class ViewerWindow : JFrame() {
         val analysisMenu = JMenu("Analysis")
         analysisMenu.add(FindLostClasses { currentMappings })
         analysisMenu.add(FindUnobfuscatedClasses { currentMappings })
+        analysisMenu.add(HowManyInWorld(this) { currentMappings })
 
         menu.add(fileMenu)
         menu.add(viewMenu)
