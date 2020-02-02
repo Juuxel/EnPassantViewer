@@ -2,14 +2,20 @@ package juuxel.enpassantviewer.action.analysis
 
 import io.github.cottonmc.proguardparser.ClassMapping
 import io.github.cottonmc.proguardparser.ProjectMapping
-import juuxel.enpassantviewer.ui.ErrorReporter
-import juuxel.enpassantviewer.ui.action
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.event.ActionEvent
 import java.text.MessageFormat
-import javax.swing.*
+import javax.swing.AbstractAction
+import javax.swing.JButton
+import javax.swing.JDialog
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTable
+import javax.swing.WindowConstants
 import javax.swing.table.AbstractTableModel
+import juuxel.enpassantviewer.ui.ErrorReporter
+import juuxel.enpassantviewer.ui.action
 
 class FindLostClasses(
     private val mappings: () -> ProjectMapping

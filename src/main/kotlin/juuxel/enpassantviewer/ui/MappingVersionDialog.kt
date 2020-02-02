@@ -3,7 +3,14 @@ package juuxel.enpassantviewer.ui
 import java.awt.BorderLayout
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import javax.swing.*
+import javax.swing.Box
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JComboBox
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.JPanel
+import javax.swing.WindowConstants
 
 class MappingVersionDialog(parent: JFrame) : JDialog(parent) {
     private val cb: JComboBox<String>

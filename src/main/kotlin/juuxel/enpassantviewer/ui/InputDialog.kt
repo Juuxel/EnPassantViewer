@@ -3,7 +3,11 @@ package juuxel.enpassantviewer.ui
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.GridLayout
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JDialog
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 class InputDialog(prompt: String, properties: Map<String, String>) : JDialog() {
     private val fields: Map<String, JTextField>

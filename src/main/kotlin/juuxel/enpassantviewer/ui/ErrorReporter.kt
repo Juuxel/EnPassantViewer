@@ -1,9 +1,9 @@
 package juuxel.enpassantviewer.ui
 
-import org.jdesktop.swingx.JXErrorPane
-import org.jdesktop.swingx.error.ErrorInfo
 import java.awt.Component
 import java.util.logging.Level
+import org.jdesktop.swingx.JXErrorPane
+import org.jdesktop.swingx.error.ErrorInfo
 
 object ErrorReporter {
     fun run(parent: Component, message: String, fn: () -> Unit) {

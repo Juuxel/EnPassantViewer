@@ -1,10 +1,15 @@
 package juuxel.enpassantviewer.action.analysis
 
-import io.github.cottonmc.proguardparser.*
-import juuxel.enpassantviewer.ui.MappingsTreeNode
+import io.github.cottonmc.proguardparser.ProjectMapping
+import io.github.cottonmc.proguardparser.classes
 import java.awt.event.ActionEvent
-import javax.swing.*
+import javax.swing.AbstractAction
+import javax.swing.JDialog
+import javax.swing.JScrollPane
+import javax.swing.JTree
+import javax.swing.WindowConstants
 import javax.swing.tree.DefaultTreeModel
+import juuxel.enpassantviewer.ui.MappingsTreeNode
 
 class FindUnobfuscatedClasses(
     private val mappings: () -> ProjectMapping

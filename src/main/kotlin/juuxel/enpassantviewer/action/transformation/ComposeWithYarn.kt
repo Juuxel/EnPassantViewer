@@ -4,14 +4,14 @@ import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonArray
 import blue.endless.jankson.JsonObject
 import io.github.cottonmc.proguardparser.ProjectMapping
-import juuxel.enpassantviewer.action.mappings.MappingCache
-import juuxel.enpassantviewer.ui.MappingVersionDialog
-import juuxel.enpassantviewer.ui.ProgressDialog
 import java.awt.event.ActionEvent
 import java.net.URL
 import java.util.zip.GZIPInputStream
 import javax.swing.AbstractAction
 import javax.swing.JFrame
+import juuxel.enpassantviewer.action.mappings.MappingCache
+import juuxel.enpassantviewer.ui.MappingVersionDialog
+import juuxel.enpassantviewer.ui.ProgressDialog
 
 class ComposeWithYarn(
     private val frame: JFrame,

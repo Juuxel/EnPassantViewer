@@ -1,13 +1,18 @@
 package juuxel.enpassantviewer.ui
 
+import java.awt.GridLayout
+import java.util.ArrayDeque
+import java.util.Deque
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JProgressBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.swing.Swing
-import java.awt.GridLayout
-import java.util.*
-import javax.swing.*
 
 interface StepManager {
     /**

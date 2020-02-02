@@ -3,8 +3,8 @@ package juuxel.enpassantviewer.action.mappings
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonArray
 import blue.endless.jankson.JsonObject
-import juuxel.enpassantviewer.ui.StepManager
 import java.net.URL
+import juuxel.enpassantviewer.ui.StepManager
 
 object MappingCache {
     private lateinit var manifest: JsonObject

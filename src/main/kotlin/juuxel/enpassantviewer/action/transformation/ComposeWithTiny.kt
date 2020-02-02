@@ -1,10 +1,13 @@
 package juuxel.enpassantviewer.action.transformation
 
-import io.github.cottonmc.proguardparser.*
+import io.github.cottonmc.proguardparser.FieldMapping
+import io.github.cottonmc.proguardparser.MethodMapping
+import io.github.cottonmc.proguardparser.ProjectMapping
+import io.github.cottonmc.proguardparser.classes
+import java.io.BufferedReader
 import juuxel.enpassantviewer.ui.InputDialog
 import net.fabricmc.mapping.tree.ClassDef
 import net.fabricmc.mapping.tree.TinyMappingFactory
-import java.io.BufferedReader
 
 class ComposeWithTiny(private val mappings: ProjectMapping) {
     fun run(tinyReader: BufferedReader): ProjectMapping {

@@ -2,13 +2,13 @@ package juuxel.enpassantviewer.action.mappings
 
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings
-import juuxel.enpassantviewer.ui.MappingVersionDialog
-import juuxel.enpassantviewer.ui.ProgressDialog
-import juuxel.enpassantviewer.ui.StepManager
 import java.awt.event.ActionEvent
 import java.net.URL
 import javax.swing.AbstractAction
 import javax.swing.JFrame
+import juuxel.enpassantviewer.ui.MappingVersionDialog
+import juuxel.enpassantviewer.ui.ProgressDialog
+import juuxel.enpassantviewer.ui.StepManager
 
 class OpenMojmap(
     private val frame: JFrame,

@@ -1,13 +1,13 @@
 package juuxel.enpassantviewer.action.transformation
 
 import io.github.cottonmc.proguardparser.ProjectMapping
-import juuxel.enpassantviewer.action.mappings.MappingCache
-import juuxel.enpassantviewer.ui.MappingVersionDialog
-import juuxel.enpassantviewer.ui.ProgressDialog
 import java.awt.event.ActionEvent
 import java.net.URL
 import javax.swing.AbstractAction
 import javax.swing.JFrame
+import juuxel.enpassantviewer.action.mappings.MappingCache
+import juuxel.enpassantviewer.ui.MappingVersionDialog
+import juuxel.enpassantviewer.ui.ProgressDialog
 
 class ComposeWithIntermediary(
     private val frame: JFrame,

@@ -1,7 +1,11 @@
 package juuxel.enpassantviewer.ui
 
-import io.github.cottonmc.proguardparser.*
-import java.util.*
+import io.github.cottonmc.proguardparser.ClassMapping
+import io.github.cottonmc.proguardparser.FieldMapping
+import io.github.cottonmc.proguardparser.MethodMapping
+import io.github.cottonmc.proguardparser.ProjectMapping
+import java.util.Enumeration
+import java.util.Vector
 import javax.swing.tree.TreeNode
 
 sealed class MappingsTreeNode : TreeNode {

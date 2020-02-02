@@ -3,21 +3,28 @@ package juuxel.enpassantviewer.ui
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.parseProguardMappings
 import io.github.cottonmc.proguardparser.toProguardMappings
-import juuxel.enpassantviewer.action.analysis.FindLostClasses
-import juuxel.enpassantviewer.action.analysis.FindUnobfuscatedClasses
-import juuxel.enpassantviewer.action.mappings.OpenMojmap
-import juuxel.enpassantviewer.action.transformation.ComposeWithIntermediary
-import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
-import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
-import juuxel.enpassantviewer.action.transformation.Invert
-import juuxel.enpassantviewer.action.view.ViewRebuildAction
 import java.awt.Dimension
 import java.awt.Event
 import java.awt.event.KeyEvent
 import java.io.File
 import javax.imageio.ImageIO
-import javax.swing.*
+import javax.swing.ButtonGroup
+import javax.swing.JFileChooser
+import javax.swing.JFrame
+import javax.swing.JMenu
+import javax.swing.JMenuBar
+import javax.swing.JMenuItem
+import javax.swing.JRadioButtonMenuItem
+import javax.swing.KeyStroke
 import javax.swing.tree.DefaultTreeModel
+import juuxel.enpassantviewer.action.analysis.FindLostClasses
+import juuxel.enpassantviewer.action.analysis.FindUnobfuscatedClasses
+import juuxel.enpassantviewer.action.mappings.OpenMojmap
+import juuxel.enpassantviewer.action.transformation.ComposeWithIntermediary
+import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
+import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
+import juuxel.enpassantviewer.action.transformation.Invert
+import juuxel.enpassantviewer.action.view.ViewRebuildAction
 
 class ViewerWindow : JFrame() {
     private val ui = UI()

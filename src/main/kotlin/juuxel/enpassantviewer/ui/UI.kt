@@ -1,7 +1,9 @@
 package juuxel.enpassantviewer.ui
 
 import java.awt.BorderLayout
-import javax.swing.*
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTree
 
 class UI : JPanel() {
     val tree = JTree(arrayOf("Hello"))

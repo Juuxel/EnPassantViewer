@@ -1,10 +1,10 @@
 package juuxel.enpassantviewer.action.view
 
 import io.github.cottonmc.proguardparser.ProjectMapping
-import juuxel.enpassantviewer.ui.MappingsTreeNode
-import juuxel.enpassantviewer.ui.UI
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import juuxel.enpassantviewer.ui.MappingsTreeNode
+import juuxel.enpassantviewer.ui.UI
 
 class ViewRebuildAction(
     private val mappings: () -> ProjectMapping,
