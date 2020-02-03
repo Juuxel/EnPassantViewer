@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     java
     kotlin("jvm") version "1.3.61"
@@ -45,9 +47,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.3.3")
 }
 
-tasks.compileKotlin {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
-tasks.compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+
+val sourcesJar = tasks.create<Jar>("sourcesJar") {
+    group = "build"
+
+    archiveClassifier.set("sources")
+    from(sourceSets.getByName("main").allSource)
+}
+
+tasks.build {
+    dependsOn(sourcesJar)
 }
