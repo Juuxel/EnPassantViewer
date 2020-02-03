@@ -36,7 +36,6 @@ dependencies {
 
     implementation("io.github.cottonmc:proguard-mappings-parser:1.5.0")
     implementation("net.fabricmc:tiny-mappings-parser:0.2.1.13")
-    implementation("com.google.guava:guava:28.2-jre")
     implementation("blue.endless:jankson:1.2.0-62")
 
     implementation("org.swinglabs.swingx:swingx-all:1.6.5-1")
