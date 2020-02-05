@@ -26,6 +26,7 @@ import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
 import juuxel.enpassantviewer.action.transformation.Invert
 import juuxel.enpassantviewer.action.view.ViewRebuildAction
+import juuxel.enpassantviewer.ui.status.GameVersion
 
 class ViewerWindow : JFrame() {
     private val ui = UI()
@@ -55,12 +56,14 @@ class ViewerWindow : JFrame() {
             }
         }
 
+        val gameVersion = { ui.statusManager.currentGameVersion }
+
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
         val saveButton = JMenuItem(save)
         saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
-        fileMenu.add(OpenMojmap(this, this::setMappings))
+        fileMenu.add(OpenMojmap(this, gameVersion, this::setMappings))
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")
@@ -96,13 +99,13 @@ class ViewerWindow : JFrame() {
                     val newMappings = fileChooser.selectedFile.bufferedReader().use {
                         ComposeWithTiny(currentMappings).run(it)
                     }
-                    setMappings(newMappings)
+                    setMappings(newMappings, ui.statusManager.currentGameVersion)
                 }
             }
         }
         val invert = action("Invert") {
             ErrorReporter.run(this, "Error while inverting mappings") {
-                setMappings(Invert.run(currentMappings))
+                setMappings(Invert.run(currentMappings), ui.statusManager.currentGameVersion)
             }
         }
 
@@ -112,8 +115,8 @@ class ViewerWindow : JFrame() {
         invertButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK)
 
         transformMenu.add(composeTinyButton)
-        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, this::setMappings))
-        transformMenu.add(ComposeWithYarn(this, { currentMappings }, this::setMappings))
+        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, gameVersion, this::setMappings))
+        transformMenu.add(ComposeWithYarn(this, { currentMappings }, gameVersion, this::setMappings))
         transformMenu.add(invertButton)
 
         val analysisMenu = JMenu("Analysis")
@@ -145,7 +148,7 @@ class ViewerWindow : JFrame() {
     private fun loadMappings(file: File) {
         ProgressDialog.show(this, "Parsing mappings") {
             val mappings = parseProguardMappings(file.readLines())
-            setMappings(mappings)
+            setMappings(mappings, GameVersion.Unknown)
         }
     }
 
@@ -155,8 +158,9 @@ class ViewerWindow : JFrame() {
         }
     }
 
-    private fun setMappings(mappings: ProjectMapping) {
+    private fun setMappings(mappings: ProjectMapping, version: GameVersion) {
         currentMappings = mappings
         ui.tree.model = DefaultTreeModel(MappingsTreeNode.Root(mappings, ui.treeView.createPackageTree))
+        ui.statusManager.currentGameVersion = version
     }
 }

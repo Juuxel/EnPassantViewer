@@ -1,5 +1,7 @@
 package juuxel.enpassantviewer.ui
 
+import juuxel.enpassantviewer.ui.status.EPStatusBar
+import juuxel.enpassantviewer.ui.status.StatusManager
 import java.awt.BorderLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -8,11 +10,15 @@ import javax.swing.JTree
 class UI : JPanel() {
     val tree = JTree(arrayOf("Hello"))
     var treeView: TreeView = TreeView.Separate
+    val statusManager: StatusManager
 
     init {
         layout = BorderLayout()
+        val statusBar = EPStatusBar()
+        statusManager = statusBar
 
         add(JScrollPane(tree), BorderLayout.CENTER)
+        add(statusBar, BorderLayout.SOUTH)
     }
 
     enum class TreeView {

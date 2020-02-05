@@ -12,12 +12,16 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
 
-class MappingVersionDialog(parent: JFrame) : JDialog(parent) {
+class MappingVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
     private val cb: JComboBox<String>
     private var isCancelled = false
 
     init {
-        cb = JComboBox(arrayOf("Latest release", "Latest snapshot", "Custom version..."))
+        val versions: Array<String> = arrayOf("Latest release", "Latest snapshot", "Custom version...").let {
+            if (default != null) arrayOf(default, *it)
+            else it
+        }
+        cb = JComboBox(versions)
         cb.isEditable = true
 
         val okButton = JButton(action("Ok") { isVisible = false })

@@ -12,16 +12,18 @@ import javax.swing.JFrame
 import juuxel.enpassantviewer.action.mappings.MappingCache
 import juuxel.enpassantviewer.ui.MappingVersionDialog
 import juuxel.enpassantviewer.ui.ProgressDialog
+import juuxel.enpassantviewer.ui.status.GameVersion
 
 class ComposeWithYarn(
     private val frame: JFrame,
     private val mappings: () -> ProjectMapping,
-    private val mappingsSetter: (ProjectMapping) -> Unit
+    private val gameVersion: () -> GameVersion,
+    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit
 ) : AbstractAction("Compose with Yarn") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Yarn") {
             step = "Finding Yarn mappings"
-            val version = when (val version = MappingVersionDialog(frame).requestInput()) {
+            val version = when (val version = MappingVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
                 MappingVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
                 MappingVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
                 is MappingVersionDialog.Result.Custom -> version.version
@@ -45,7 +47,7 @@ class ComposeWithYarn(
             }
 
             step = "Setting mappings"
-            mappingsSetter(composedMappings)
+            mappingsSetter(composedMappings, GameVersion(version))
         }
     }
 }
