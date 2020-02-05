@@ -1,11 +1,11 @@
 package juuxel.enpassantviewer.ui
 
-import juuxel.enpassantviewer.ui.status.EPStatusBar
-import juuxel.enpassantviewer.ui.status.StatusManager
 import java.awt.BorderLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTree
+import juuxel.enpassantviewer.ui.status.EPStatusBar
+import juuxel.enpassantviewer.ui.status.StatusManager
 
 class UI : JPanel() {
     val tree = JTree(arrayOf("Hello"))

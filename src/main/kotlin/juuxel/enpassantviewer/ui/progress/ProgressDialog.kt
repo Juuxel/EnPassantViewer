@@ -1,6 +1,5 @@
 package juuxel.enpassantviewer.ui.progress
 
-import juuxel.enpassantviewer.ui.ErrorReporter
 import java.awt.GridLayout
 import java.util.ArrayDeque
 import java.util.Deque
@@ -9,6 +8,7 @@ import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JProgressBar
+import juuxel.enpassantviewer.ui.ErrorReporter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -1,6 +1,5 @@
 package juuxel.enpassantviewer.ui.input
 
-import juuxel.enpassantviewer.ui.action
 import java.awt.BorderLayout
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -12,6 +11,7 @@ import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
+import juuxel.enpassantviewer.ui.action
 
 class GameVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
     private val cb: JComboBox<String>
