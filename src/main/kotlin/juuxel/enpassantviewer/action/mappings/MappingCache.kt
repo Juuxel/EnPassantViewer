@@ -4,7 +4,7 @@ import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonArray
 import blue.endless.jankson.JsonObject
 import java.net.URL
-import juuxel.enpassantviewer.ui.StepManager
+import juuxel.enpassantviewer.ui.progress.StepManager
 
 object MappingCache {
     private lateinit var manifest: JsonObject

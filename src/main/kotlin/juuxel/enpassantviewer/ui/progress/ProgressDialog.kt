@@ -1,5 +1,6 @@
-package juuxel.enpassantviewer.ui
+package juuxel.enpassantviewer.ui.progress
 
+import juuxel.enpassantviewer.ui.ErrorReporter
 import java.awt.GridLayout
 import java.util.ArrayDeque
 import java.util.Deque
@@ -13,16 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.swing.Swing
-
-interface StepManager {
-    /**
-     * The current top entry of the step stack.
-     */
-    var step: String
-
-    fun pushStep(step: String)
-    fun popStep()
-}
 
 class ProgressDialog(parent: JFrame, message: String) : JDialog(parent), StepManager {
     private val label = JLabel(message)

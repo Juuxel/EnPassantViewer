@@ -10,8 +10,8 @@ import java.util.zip.GZIPInputStream
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 import juuxel.enpassantviewer.action.mappings.MappingCache
-import juuxel.enpassantviewer.ui.MappingVersionDialog
-import juuxel.enpassantviewer.ui.ProgressDialog
+import juuxel.enpassantviewer.ui.input.GameVersionDialog
+import juuxel.enpassantviewer.ui.progress.ProgressDialog
 import juuxel.enpassantviewer.ui.status.GameVersion
 
 class ComposeWithYarn(
@@ -23,11 +23,11 @@ class ComposeWithYarn(
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Yarn") {
             step = "Finding Yarn mappings"
-            val version = when (val version = MappingVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
-                MappingVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
-                MappingVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
-                is MappingVersionDialog.Result.Custom -> version.version
-                MappingVersionDialog.Result.Cancelled -> return@show
+            val version = when (val version = GameVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
+                GameVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
+                GameVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
+                is GameVersionDialog.Result.Custom -> version.version
+                GameVersionDialog.Result.Cancelled -> return@show
             }
             val dataUrl = URL("https://meta.fabricmc.net/v2/versions/yarn/$version")
             val jankson = Jankson.builder().build()

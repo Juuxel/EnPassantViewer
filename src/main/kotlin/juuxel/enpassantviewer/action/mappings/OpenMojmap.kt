@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent
 import java.net.URL
 import javax.swing.AbstractAction
 import javax.swing.JFrame
-import juuxel.enpassantviewer.ui.MappingVersionDialog
-import juuxel.enpassantviewer.ui.ProgressDialog
-import juuxel.enpassantviewer.ui.StepManager
+import juuxel.enpassantviewer.ui.input.GameVersionDialog
+import juuxel.enpassantviewer.ui.progress.ProgressDialog
+import juuxel.enpassantviewer.ui.progress.StepManager
 import juuxel.enpassantviewer.ui.status.GameVersion
 
 class OpenMojmap(
@@ -21,11 +21,11 @@ class OpenMojmap(
     }
 
     private fun StepManager.run() {
-        val version = when (val version = MappingVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
-            MappingVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
-            MappingVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
-            is MappingVersionDialog.Result.Custom -> version.version
-            MappingVersionDialog.Result.Cancelled -> return
+        val version = when (val version = GameVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
+            GameVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
+            GameVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
+            is GameVersionDialog.Result.Custom -> version.version
+            GameVersionDialog.Result.Cancelled -> return
         }
         val versionManifest = MappingCache.getVersionManifest(this, version)
         val mojmapUrl = versionManifest

@@ -10,7 +10,12 @@ object ErrorReporter {
         try {
             fn()
         } catch (e: Exception) {
-            JXErrorPane.showDialog(parent, ErrorInfo(message, message, null, null, e, Level.SEVERE, null))
+            report(parent, message, e)
         }
+    }
+
+    fun report(parent: Component, message: String?, error: Exception) {
+        val msg: String = message ?: "${error::class.java.name}: ${error.message}"
+        JXErrorPane.showDialog(parent, ErrorInfo(msg, msg, null, null, error, Level.SEVERE, null))
     }
 }

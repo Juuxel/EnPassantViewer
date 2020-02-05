@@ -26,6 +26,7 @@ import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
 import juuxel.enpassantviewer.action.transformation.Invert
 import juuxel.enpassantviewer.action.view.ViewRebuildAction
+import juuxel.enpassantviewer.ui.progress.ProgressDialog
 import juuxel.enpassantviewer.ui.status.GameVersion
 
 class ViewerWindow : JFrame() {

@@ -1,5 +1,6 @@
-package juuxel.enpassantviewer.ui
+package juuxel.enpassantviewer.ui.input
 
+import juuxel.enpassantviewer.ui.action
 import java.awt.BorderLayout
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -12,12 +13,12 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
 
-class MappingVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
+class GameVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
     private val cb: JComboBox<String>
     private var isCancelled = false
 
     init {
-        val versions: Array<String> = arrayOf("Latest release", "Latest snapshot", "Custom version...").let {
+        val versions: Array<String> = arrayOf(SNAPSHOT, RELEASE, "Custom version...").let {
             if (default != null) arrayOf(default, *it)
             else it
         }
@@ -58,20 +59,25 @@ class MappingVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
         return when {
             isCancelled -> Result.Cancelled
             else -> when (val version = cb.selectedItem?.toString() ?: "null") {
-                "Latest release" -> Result.LatestRelease
-                "Latest snapshot" -> Result.LatestSnapshot
+                RELEASE -> Result.LatestRelease
+                SNAPSHOT -> Result.LatestSnapshot
                 else -> Result.Custom(version)
             }
         }
     }
 
+    companion object {
+        private const val RELEASE = "Latest release"
+        private const val SNAPSHOT = "Latest snapshot"
+    }
+
     sealed class Result {
         object LatestRelease : Result() {
-            override fun toString() = "Latest release"
+            override fun toString() = RELEASE
         }
 
         object LatestSnapshot : Result() {
-            override fun toString() = "Latest snapshot"
+            override fun toString() = SNAPSHOT
         }
 
         object Cancelled : Result()

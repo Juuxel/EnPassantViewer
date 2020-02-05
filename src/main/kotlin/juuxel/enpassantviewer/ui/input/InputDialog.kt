@@ -1,4 +1,4 @@
-package juuxel.enpassantviewer.ui
+package juuxel.enpassantviewer.ui.input
 
 import java.awt.BorderLayout
 import java.awt.FlowLayout
