@@ -21,12 +21,7 @@ class OpenMojmap(
     }
 
     private fun StepManager.run() {
-        val version = when (val version = GameVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
-            GameVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
-            GameVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
-            is GameVersionDialog.Result.Custom -> version.version
-            GameVersionDialog.Result.Cancelled -> return
-        }
+        val version = GameVersionDialog(frame, gameVersion()).requestInputFromCache(this) ?: return
         val versionManifest = MappingCache.getVersionManifest(this, version)
         val mojmapUrl = versionManifest
             .getObject("downloads")!!

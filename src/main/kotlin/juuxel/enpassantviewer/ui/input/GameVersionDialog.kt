@@ -11,11 +11,16 @@ import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
+import juuxel.enpassantviewer.action.mappings.MappingCache
 import juuxel.enpassantviewer.ui.action
+import juuxel.enpassantviewer.ui.progress.StepManager
+import juuxel.enpassantviewer.ui.status.GameVersion
 
 class GameVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
     private val cb: JComboBox<String>
     private var isCancelled = false
+
+    constructor(parent: JFrame, default: GameVersion) : this(parent, default.getVersionOrNull())
 
     init {
         val versions: Array<String> = arrayOf(SNAPSHOT, RELEASE, "Custom version...").let {
@@ -63,6 +68,15 @@ class GameVersionDialog(parent: JFrame, default: String?) : JDialog(parent) {
                 SNAPSHOT -> Result.LatestSnapshot
                 else -> Result.Custom(version)
             }
+        }
+    }
+
+    fun requestInputFromCache(stepManager: StepManager?): String? {
+        return when (val version = requestInput()) {
+            GameVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(stepManager)
+            GameVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(stepManager)
+            is GameVersionDialog.Result.Custom -> version.version
+            GameVersionDialog.Result.Cancelled -> null
         }
     }
 

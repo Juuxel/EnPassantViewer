@@ -9,7 +9,6 @@ import java.net.URL
 import java.util.zip.GZIPInputStream
 import javax.swing.AbstractAction
 import javax.swing.JFrame
-import juuxel.enpassantviewer.action.mappings.MappingCache
 import juuxel.enpassantviewer.ui.input.GameVersionDialog
 import juuxel.enpassantviewer.ui.progress.ProgressDialog
 import juuxel.enpassantviewer.ui.status.GameVersion
@@ -23,12 +22,7 @@ class ComposeWithYarn(
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Yarn") {
             step = "Finding Yarn mappings"
-            val version = when (val version = GameVersionDialog(frame, gameVersion().getVersionOrNull()).requestInput()) {
-                GameVersionDialog.Result.LatestRelease -> MappingCache.getLatestRelease(this)
-                GameVersionDialog.Result.LatestSnapshot -> MappingCache.getLatestSnapshot(this)
-                is GameVersionDialog.Result.Custom -> version.version
-                GameVersionDialog.Result.Cancelled -> return@show
-            }
+            val version = GameVersionDialog(frame, gameVersion()).requestInputFromCache(this) ?: return@show
             val dataUrl = URL("https://meta.fabricmc.net/v2/versions/yarn/$version")
             val jankson = Jankson.builder().build()
             val mappingData = dataUrl.openStream().use { input -> jankson.loadElement(input) } as JsonArray
