@@ -13,15 +13,15 @@ import juuxel.enpassantviewer.ui.status.GameVersion
 
 class OpenMojmap(
     private val frame: JFrame,
-    private val gameVersion: () -> GameVersion,
-    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit
+    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit,
+    private val setAsterisk: (Boolean) -> Unit
 ) : AbstractAction("Open Mojmap") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Opening mojmap") { run() }
     }
 
     private fun StepManager.run() {
-        val version = GameVersionDialog(frame, gameVersion()).requestInputFromCache(this) ?: return
+        val version = GameVersionDialog(frame, GameVersion.Unknown).requestInputFromCache(this) ?: return
         val versionManifest = MappingCache.getVersionManifest(this, version)
         val mojmapUrl = versionManifest
             .getObject("downloads")!!
@@ -36,5 +36,6 @@ class OpenMojmap(
 
         step = "Setting the mappings"
         mappingsSetter(mappings, GameVersion(version))
+        setAsterisk(false)
     }
 }

@@ -58,13 +58,18 @@ class ViewerWindow : JFrame() {
         }
 
         val gameVersion = { ui.statusManager.currentGameVersion }
+        val setAsterisk: (Boolean) -> Unit = {
+            ui.statusManager.hasAsterisk = it
+            title = title.substringBeforeLast('*')
+            if (it) title += '*'
+        }
 
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
         val saveButton = JMenuItem(save)
         saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
-        fileMenu.add(OpenMojmap(this, gameVersion, this::setMappings))
+        fileMenu.add(OpenMojmap(this, this::setMappings, setAsterisk))
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")
@@ -107,6 +112,7 @@ class ViewerWindow : JFrame() {
         val invert = action("Invert") {
             ErrorReporter.run(this, "Error while inverting mappings") {
                 setMappings(Invert.run(currentMappings), ui.statusManager.currentGameVersion)
+                setAsterisk(true)
             }
         }
 
@@ -116,8 +122,8 @@ class ViewerWindow : JFrame() {
         invertButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK)
 
         transformMenu.add(composeTinyButton)
-        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, gameVersion, this::setMappings))
-        transformMenu.add(ComposeWithYarn(this, { currentMappings }, gameVersion, this::setMappings))
+        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk))
+        transformMenu.add(ComposeWithYarn(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk))
         transformMenu.add(invertButton)
 
         val analysisMenu = JMenu("Analysis")

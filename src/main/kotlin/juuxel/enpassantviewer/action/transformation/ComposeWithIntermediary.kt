@@ -13,7 +13,8 @@ class ComposeWithIntermediary(
     private val frame: JFrame,
     private val mappings: () -> ProjectMapping,
     private val gameVersion: () -> GameVersion,
-    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit
+    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit,
+    private val setAsterisk: (Boolean) -> Unit
 ) : AbstractAction("Compose with Intermediary") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Intermediary") {
@@ -27,6 +28,7 @@ class ComposeWithIntermediary(
 
             step = "Setting mappings"
             mappingsSetter(composedMappings, GameVersion(version))
+            setAsterisk(true)
         }
     }
 }

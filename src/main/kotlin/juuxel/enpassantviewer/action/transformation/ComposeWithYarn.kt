@@ -17,7 +17,8 @@ class ComposeWithYarn(
     private val frame: JFrame,
     private val mappings: () -> ProjectMapping,
     private val gameVersion: () -> GameVersion,
-    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit
+    private val mappingsSetter: (ProjectMapping, GameVersion) -> Unit,
+    private val setAsterisk: (Boolean) -> Unit
 ) : AbstractAction("Compose with Yarn") {
     override fun actionPerformed(e: ActionEvent?) {
         ProgressDialog.show(frame, "Composing with Yarn") {
@@ -42,6 +43,7 @@ class ComposeWithYarn(
 
             step = "Setting mappings"
             mappingsSetter(composedMappings, GameVersion(version))
+            setAsterisk(true)
         }
     }
 }

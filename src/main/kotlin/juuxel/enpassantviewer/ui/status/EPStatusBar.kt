@@ -10,6 +10,14 @@ class EPStatusBar : WebStatusBar(), StatusManager {
             label.text = getVersionString(value)
         }
 
+    override var hasAsterisk: Boolean = false
+        set(value) {
+            field = value
+
+            label.text = label.text.substringBeforeLast('*')
+            if (value) label.text += '*'
+        }
+
     private val label: JLabel = JLabel(getVersionString(currentGameVersion))
 
     init {
