@@ -17,6 +17,7 @@ import javax.swing.JMenuItem
 import javax.swing.JRadioButtonMenuItem
 import javax.swing.KeyStroke
 import javax.swing.tree.DefaultTreeModel
+import juuxel.enpassantviewer.action.ActionContext
 import juuxel.enpassantviewer.action.analysis.FindLostClasses
 import juuxel.enpassantviewer.action.analysis.FindUnobfuscatedClasses
 import juuxel.enpassantviewer.action.analysis.HowManyInWorld
@@ -63,13 +64,14 @@ class ViewerWindow : JFrame() {
             title = title.substringBeforeLast('*')
             if (it) title += '*'
         }
+        val actionContext = ActionContext(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk)
 
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
         val saveButton = JMenuItem(save)
         saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
-        fileMenu.add(OpenMojmap(this, this::setMappings, setAsterisk))
+        fileMenu.add(OpenMojmap(actionContext))
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")
@@ -106,6 +108,7 @@ class ViewerWindow : JFrame() {
                         ComposeWithTiny(currentMappings).run(it)
                     }
                     setMappings(newMappings, ui.statusManager.currentGameVersion)
+                    setAsterisk(true)
                 }
             }
         }
@@ -122,8 +125,8 @@ class ViewerWindow : JFrame() {
         invertButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK)
 
         transformMenu.add(composeTinyButton)
-        transformMenu.add(ComposeWithIntermediary(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk))
-        transformMenu.add(ComposeWithYarn(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk))
+        transformMenu.add(ComposeWithIntermediary(actionContext))
+        transformMenu.add(ComposeWithYarn(actionContext))
         transformMenu.add(invertButton)
 
         val analysisMenu = JMenu("Analysis")
