@@ -59,12 +59,7 @@ class ViewerWindow : JFrame() {
         }
 
         val gameVersion = { ui.statusManager.currentGameVersion }
-        val setAsterisk: (Boolean) -> Unit = {
-            ui.statusManager.hasAsterisk = it
-            title = title.substringBeforeLast('*')
-            if (it) title += '*'
-        }
-        val actionContext = ActionContext(this, { currentMappings }, gameVersion, this::setMappings, setAsterisk)
+        val actionContext = ActionContext(this, { currentMappings }, gameVersion, this::setMappings, this::setAsterisk)
 
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
@@ -159,6 +154,7 @@ class ViewerWindow : JFrame() {
         ProgressDialog.show(this, "Parsing mappings") {
             val mappings = parseProguardMappings(file.readLines())
             setMappings(mappings, GameVersion.Unknown)
+            setAsterisk(false)
         }
     }
 
@@ -172,5 +168,11 @@ class ViewerWindow : JFrame() {
         currentMappings = mappings
         ui.tree.model = DefaultTreeModel(MappingsTreeNode.Root(mappings, ui.treeView.createPackageTree))
         ui.statusManager.currentGameVersion = version
+    }
+
+    private fun setAsterisk(asterisk: Boolean) {
+        ui.statusManager.hasAsterisk = asterisk
+        title = title.substringBeforeLast('*')
+        if (asterisk) title += '*'
     }
 }
