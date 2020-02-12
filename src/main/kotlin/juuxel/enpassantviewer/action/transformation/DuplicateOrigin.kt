@@ -19,5 +19,6 @@ class DuplicateOrigin(private val context: ActionContext) : AbstractAction("Dupl
         }
 
         context.setMappings(newMappings)
+        context.setAsterisk(true)
     }
 }

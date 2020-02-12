@@ -108,16 +108,10 @@ class ViewerWindow : JFrame() {
                 }
             }
         }
-        val invert = action("Invert") {
-            ErrorReporter.run(this, "Error while inverting mappings") {
-                setMappings(Invert.run(currentMappings), ui.statusManager.currentGameVersion)
-                setAsterisk(true)
-            }
-        }
 
         val composeTinyButton = JMenuItem(composeWithTiny)
         composeTinyButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK)
-        val invertButton = JMenuItem(invert)
+        val invertButton = JMenuItem(Invert(actionContext))
         invertButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.CTRL_MASK)
 
         transformMenu.add(composeTinyButton)

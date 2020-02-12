@@ -2,13 +2,18 @@ package juuxel.enpassantviewer.action.transformation
 
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.classes
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import juuxel.enpassantviewer.action.ActionContext
+import juuxel.enpassantviewer.ui.progress.ProgressDialog
 
-object Invert {
+class Invert(private val context: ActionContext) : AbstractAction("Invert") {
     private fun tryConvertToTarget(mappings: ProjectMapping, type: String) =
         mappings.findClassOrNull(type)?.to ?: type
 
-    fun run(mappings: ProjectMapping): ProjectMapping =
-        ProjectMapping.classes.modify(mappings) { classes ->
+    override fun actionPerformed(e: ActionEvent?) = ProgressDialog.show(context.frame, "Inverting mappings") {
+        val mappings = context.mappings
+        val newMappings = ProjectMapping.classes.modify(mappings) { classes ->
             classes.map { c ->
                 c.copy(
                     from = c.to,
@@ -31,4 +36,8 @@ object Invert {
                 )
             }
         }
+
+        context.setMappings(newMappings)
+        context.setAsterisk(true)
+    }
 }
