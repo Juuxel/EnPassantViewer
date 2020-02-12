@@ -14,6 +14,9 @@ class ActionContext(
     val mappings: ProjectMapping get() = getMappings()
     val gameVersion: GameVersion get() = getGameVersion()
 
+    fun setMappings(mappings: ProjectMapping) =
+        setMappingsAndVersion(mappings, this.gameVersion)
+
     fun setMappingsAndVersion(mappings: ProjectMapping, version: GameVersion) =
         setMappings.invoke(mappings, version)
 

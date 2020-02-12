@@ -25,6 +25,7 @@ import juuxel.enpassantviewer.action.mappings.OpenMojmap
 import juuxel.enpassantviewer.action.transformation.ComposeWithIntermediary
 import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
+import juuxel.enpassantviewer.action.transformation.DuplicateOrigin
 import juuxel.enpassantviewer.action.transformation.Invert
 import juuxel.enpassantviewer.action.view.ViewRebuildAction
 import juuxel.enpassantviewer.ui.progress.ProgressDialog
@@ -123,6 +124,7 @@ class ViewerWindow : JFrame() {
         transformMenu.add(ComposeWithIntermediary(actionContext))
         transformMenu.add(ComposeWithYarn(actionContext))
         transformMenu.add(invertButton)
+        transformMenu.add(DuplicateOrigin(actionContext))
 
         val analysisMenu = JMenu("Analysis")
         analysisMenu.add(FindLostClasses { currentMappings })

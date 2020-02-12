@@ -4,9 +4,9 @@ import io.github.cottonmc.proguardparser.FieldMapping
 import io.github.cottonmc.proguardparser.MethodMapping
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.classes
+import java.io.BufferedReader
 import juuxel.enpassantviewer.descriptor.Descriptors
 import juuxel.enpassantviewer.descriptor.MethodDescriptor
-import java.io.BufferedReader
 import juuxel.enpassantviewer.ui.input.InputDialog
 import net.fabricmc.mapping.tree.ClassDef
 import net.fabricmc.mapping.tree.TinyMappingFactory
