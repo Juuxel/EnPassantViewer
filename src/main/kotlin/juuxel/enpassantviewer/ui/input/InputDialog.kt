@@ -45,4 +45,21 @@ class InputDialog(prompt: String, properties: Map<String, String>) : JDialog() {
         isVisible = true
         return fields.mapValues { (_, field) -> field.text }
     }
+
+    companion object {
+        fun requestTinyNamespaces(defaultInputNamespace: String, defaultTargetNamespace: String): Pair<String, String> {
+            val input = InputDialog(
+                "<html><h1>Select namespaces",
+                mapOf(
+                    "Input namespace" to defaultInputNamespace,
+                    "Target namespace" to defaultTargetNamespace
+                )
+            )
+            val result = input.requestInput()
+            val inputNamespace = result["Input namespace"]!!
+            val targetNamespace = result["Target namespace"]!!
+
+            return inputNamespace to targetNamespace
+        }
+    }
 }

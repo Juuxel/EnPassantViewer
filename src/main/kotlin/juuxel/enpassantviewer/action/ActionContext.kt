@@ -1,6 +1,7 @@
 package juuxel.enpassantviewer.action
 
 import io.github.cottonmc.proguardparser.ProjectMapping
+import javax.swing.JFileChooser
 import javax.swing.JFrame
 import juuxel.enpassantviewer.ui.status.GameVersion
 
@@ -9,7 +10,8 @@ class ActionContext(
     private val getMappings: () -> ProjectMapping,
     private val getGameVersion: () -> GameVersion,
     private val setMappings: (ProjectMapping, GameVersion) -> Unit,
-    private val setAsterisk: (Boolean) -> Unit
+    private val setAsterisk: (Boolean) -> Unit,
+    val fileChooser: JFileChooser
 ) {
     val mappings: ProjectMapping get() = getMappings()
     val gameVersion: GameVersion get() = getGameVersion()

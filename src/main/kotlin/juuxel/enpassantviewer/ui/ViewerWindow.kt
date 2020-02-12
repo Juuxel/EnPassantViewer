@@ -22,6 +22,8 @@ import juuxel.enpassantviewer.action.analysis.FindLostClasses
 import juuxel.enpassantviewer.action.analysis.FindUnobfuscatedClasses
 import juuxel.enpassantviewer.action.analysis.HowManyInWorld
 import juuxel.enpassantviewer.action.mappings.OpenMojmap
+import juuxel.enpassantviewer.action.mappings.OpenTiny
+import juuxel.enpassantviewer.action.mappings.OpenYarn
 import juuxel.enpassantviewer.action.transformation.ComposeWithIntermediary
 import juuxel.enpassantviewer.action.transformation.ComposeWithTiny
 import juuxel.enpassantviewer.action.transformation.ComposeWithYarn
@@ -60,7 +62,14 @@ class ViewerWindow : JFrame() {
         }
 
         val gameVersion = { ui.statusManager.currentGameVersion }
-        val actionContext = ActionContext(this, { currentMappings }, gameVersion, this::setMappings, this::setAsterisk)
+        val actionContext = ActionContext(
+            this,
+            { currentMappings },
+            gameVersion,
+            this::setMappings,
+            this::setAsterisk,
+            fileChooser
+        )
 
         val openButton = JMenuItem(open)
         openButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK)
@@ -68,6 +77,8 @@ class ViewerWindow : JFrame() {
         saveButton.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK)
         fileMenu.add(openButton)
         fileMenu.add(OpenMojmap(actionContext))
+        fileMenu.add(OpenTiny(actionContext))
+        fileMenu.add(OpenYarn(actionContext))
         fileMenu.add(saveButton)
 
         val viewMenu = JMenu("View")

@@ -18,16 +18,9 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
         val defaultInputNamespace = namespaces.first()
         val defaultTargetNamespace = namespaces.last()
 
-        val input = InputDialog(
-            "<html><h1>Select namespaces",
-            mapOf(
-                "Input namespace" to defaultInputNamespace,
-                "Target namespace" to defaultTargetNamespace
-            )
+        val (inputNamespace, targetNamespace) = InputDialog.requestTinyNamespaces(
+            defaultInputNamespace, defaultTargetNamespace
         )
-        val result = input.requestInput()
-        val inputNamespace = result["Input namespace"]!!
-        val targetNamespace = result["Target namespace"]!!
 
         return ProjectMapping.classes.modify(mappings) { classes ->
             classes.map { c ->
@@ -42,14 +35,16 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
         }
     }
 
-    private fun tryConvertToTarget(mappings: ProjectMapping, type: String) =
-        mappings.findClassOrNull(type)?.to ?: type
+    private fun tryConvertToTarget(mappings: ProjectMapping, type: String): String {
+        val nonArrayPart = type.substringBefore('[')
+        val arrayPart = type.substring(nonArrayPart.length)
+        return mappings.findClassOrNull(nonArrayPart)?.to?.plus(arrayPart) ?: type
+    }
 
     private fun FieldMapping.getDescriptor() = Descriptors.readableToDescriptor(tryConvertToTarget(mappings, type))
 
     private fun MethodMapping.getDescriptor() =
         MethodDescriptor(
-            name = from, // doesn't matter
             parameters = parameters.map { tryConvertToTarget(mappings, it) },
             returnType = tryConvertToTarget(mappings, returnType.substringAfterLast(':'))
         ).getBytecodeDescriptor()

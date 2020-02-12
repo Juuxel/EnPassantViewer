@@ -35,7 +35,7 @@ object Descriptors {
             "V" -> "void"
             else -> when {
                 type.startsWith('[') -> descriptorToReadable(type.substring(1)) + "[]"
-                type.startsWith('L') && type.endsWith(';') -> type.substring(1, type.length - 2).replace('/', '.')
+                type.startsWith('L') && type.endsWith(';') -> type.substring(1, type.length - 1).replace('/', '.')
                 else -> throw IllegalArgumentException("Unknown type descriptor format: $type")
             }
         }
@@ -46,38 +46,41 @@ object Descriptors {
 /**
  * A method descriptor.
  *
- * @property name the name of the method
  * @property parameters the method parameters in Proguard format
  * @property returnType the method return type in Proguard format
  */
-data class MethodDescriptor(val name: String, val parameters: List<String>, val returnType: String) {
+data class MethodDescriptor(val parameters: List<String>, val returnType: String) {
     fun getBytecodeDescriptor(): String =
         '(' + parameters.joinToString(separator = "") { Descriptors.readableToDescriptor(it) } +
                 ')' + Descriptors.readableToDescriptor(returnType)
 
     companion object {
-        fun fromDescriptor(name: String, descriptor: String): MethodDescriptor {
+        fun fromDescriptor(descriptor: String): MethodDescriptor {
             val parameters = ArrayList<String>()
             val returnType: String
 
             val descriptorReader = StringReader(descriptor)
             val buffer = ArrayList<Char>()
+            var insideLiteral = false
 
             descriptorReader.expect('(')
             while (descriptorReader.peek() != ')') {
                 val current = descriptorReader.next()
                 buffer.add(current)
 
-                val isPrimitive = buffer.size == 1 && Descriptors.isPrimitive(current)
+                val isPrimitive = !insideLiteral && Descriptors.isPrimitive(current)
                 if (isPrimitive || current == ';') {
                     parameters.add(Descriptors.descriptorToReadable(buffer.joinToString(separator = "")))
                     buffer.clear()
+                    insideLiteral = false
+                } else if (current == 'L') {
+                    insideLiteral = true
                 }
             }
             descriptorReader.expect(')')
-            returnType = descriptorReader.readWhile { true }
+            returnType = descriptorReader.source.substring(descriptorReader.cursor)
 
-            return MethodDescriptor(name, parameters, returnType)
+            return MethodDescriptor(parameters, Descriptors.descriptorToReadable(returnType))
         }
     }
 }

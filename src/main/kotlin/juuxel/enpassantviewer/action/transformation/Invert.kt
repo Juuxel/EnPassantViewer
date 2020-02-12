@@ -8,8 +8,11 @@ import juuxel.enpassantviewer.action.ActionContext
 import juuxel.enpassantviewer.ui.progress.ProgressDialog
 
 class Invert(private val context: ActionContext) : AbstractAction("Invert") {
-    private fun tryConvertToTarget(mappings: ProjectMapping, type: String) =
-        mappings.findClassOrNull(type)?.to ?: type
+    private fun tryConvertToTarget(mappings: ProjectMapping, type: String): String {
+        val nonArrayPart = type.substringBefore('[')
+        val arrayPart = type.substring(nonArrayPart.length)
+        return mappings.findClassOrNull(nonArrayPart)?.to?.plus(arrayPart) ?: type
+    }
 
     override fun actionPerformed(e: ActionEvent?) = ProgressDialog.show(context.frame, "Inverting mappings") {
         val mappings = context.mappings
