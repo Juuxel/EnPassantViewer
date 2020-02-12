@@ -45,13 +45,13 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
     private fun tryConvertToTarget(mappings: ProjectMapping, type: String) =
         mappings.findClassOrNull(type)?.to ?: type
 
-    private fun FieldMapping.getDescriptor() = Descriptors.readableToDescriptor(this.to)
+    private fun FieldMapping.getDescriptor() = Descriptors.readableToDescriptor(tryConvertToTarget(mappings, type))
 
     private fun MethodMapping.getDescriptor() =
         MethodDescriptor(
             name = from, // doesn't matter
             parameters = parameters.map { tryConvertToTarget(mappings, it) },
-            returnType = tryConvertToTarget(mappings, returnType)
+            returnType = tryConvertToTarget(mappings, returnType.substringAfterLast(':'))
         ).getBytecodeDescriptor()
 
     private fun renameField(field: FieldMapping, inputNamespace: String, targetNamespace: String, clazz: ClassDef): FieldMapping {
