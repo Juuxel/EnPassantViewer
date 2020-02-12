@@ -4,6 +4,8 @@ import io.github.cottonmc.proguardparser.FieldMapping
 import io.github.cottonmc.proguardparser.MethodMapping
 import io.github.cottonmc.proguardparser.ProjectMapping
 import io.github.cottonmc.proguardparser.classes
+import juuxel.enpassantviewer.descriptor.Descriptors
+import juuxel.enpassantviewer.descriptor.MethodDescriptor
 import java.io.BufferedReader
 import juuxel.enpassantviewer.ui.input.InputDialog
 import net.fabricmc.mapping.tree.ClassDef
@@ -40,32 +42,17 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
         }
     }
 
-    private fun typeToDescriptor(type: String): String =
-        when (type) {
-            "int" -> "I"
-            "short" -> "S"
-            "long" -> "J"
-            "byte" -> "B"
-            "char" -> "C"
-            "double" -> "D"
-            "float" -> "F"
-            "boolean" -> "Z"
-            "void" -> "V"
-            else -> when {
-                type.endsWith("[]") -> "[${typeToDescriptor(type.substringBeforeLast('['))}"
-                else -> "L${(mappings.findClassOrNull(type)?.to ?: type).replace('.', '/')};"
-            }
-        }
+    private fun tryConvertToTarget(mappings: ProjectMapping, type: String) =
+        mappings.findClassOrNull(type)?.to ?: type
 
-    private fun FieldMapping.getDescriptor() = typeToDescriptor(type)
+    private fun FieldMapping.getDescriptor() = Descriptors.readableToDescriptor(this.to)
 
-    private fun MethodMapping.getDescriptor(): String {
-        // TODO: Fix param parsing
-        val params = if (parameters.size == 1 && parameters[0] == "") "" else parameters.joinToString(separator = "", transform = ::typeToDescriptor)
-        val type = typeToDescriptor(returnType.substringAfterLast(':'))
-
-        return "($params)$type"
-    }
+    private fun MethodMapping.getDescriptor() =
+        MethodDescriptor(
+            name = from, // doesn't matter
+            parameters = parameters.map { tryConvertToTarget(mappings, it) },
+            returnType = tryConvertToTarget(mappings, returnType)
+        ).getBytecodeDescriptor()
 
     private fun renameField(field: FieldMapping, inputNamespace: String, targetNamespace: String, clazz: ClassDef): FieldMapping {
         val def = clazz.fields.find {
