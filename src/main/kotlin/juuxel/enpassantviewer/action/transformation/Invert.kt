@@ -9,9 +9,13 @@ import juuxel.enpassantviewer.ui.progress.ProgressDialog
 
 class Invert(private val context: ActionContext) : AbstractAction("Invert") {
     private fun tryConvertToTarget(mappings: ProjectMapping, type: String): String {
-        val nonArrayPart = type.substringBefore('[')
-        val arrayPart = type.substring(nonArrayPart.length)
-        return mappings.findClassOrNull(nonArrayPart)?.to?.plus(arrayPart) ?: type
+        // FIXME: Isolate this
+        val colonPart = if (':' in type) type.substringBeforeLast(':') + ':' else ""
+        val nonArrayPart = type.substringAfterLast(':').substringBefore('[')
+        val arrayPart = if ('[' in type) type.substringAfter('[') + '[' else ""
+        return mappings.findClassOrNull(nonArrayPart)?.to?.let { name ->
+            "$colonPart$name$arrayPart"
+        } ?: type
     }
 
     override fun actionPerformed(e: ActionEvent?) = ProgressDialog.show(context.frame, "Inverting mappings") {

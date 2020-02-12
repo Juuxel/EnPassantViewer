@@ -36,9 +36,12 @@ class ComposeWithTiny(private val mappings: ProjectMapping) {
     }
 
     private fun tryConvertToTarget(mappings: ProjectMapping, type: String): String {
-        val nonArrayPart = type.substringBefore('[')
-        val arrayPart = type.substring(nonArrayPart.length)
-        return mappings.findClassOrNull(nonArrayPart)?.to?.plus(arrayPart) ?: type
+        val colonPart = if (':' in type) type.substringBeforeLast(':') + ':' else ""
+        val nonArrayPart = type.substringAfterLast(':').substringBefore('[')
+        val arrayPart = if ('[' in type) type.substringAfter('[') + '[' else ""
+        return mappings.findClassOrNull(nonArrayPart)?.to?.let { name ->
+            "$colonPart$name$arrayPart"
+        } ?: type
     }
 
     private fun FieldMapping.getDescriptor() = Descriptors.readableToDescriptor(tryConvertToTarget(mappings, type))
