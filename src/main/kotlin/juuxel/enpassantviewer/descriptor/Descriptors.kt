@@ -78,7 +78,7 @@ data class MethodDescriptor(val parameters: List<String>, val returnType: String
                 }
             }
             descriptorReader.expect(')')
-            returnType = descriptorReader.source.substring(descriptorReader.cursor)
+            returnType = descriptorReader.getRemaining()
 
             return MethodDescriptor(parameters, Descriptors.descriptorToReadable(returnType))
         }

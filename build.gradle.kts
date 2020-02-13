@@ -37,7 +37,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     implementation("io.github.cottonmc:proguard-mappings-parser:1.5.0")
-    implementation("io.github.juuxel:leaf-through:1.1.0")
+    implementation("io.github.juuxel:leaf-through:1.2.0")
     implementation("net.fabricmc:tiny-mappings-parser:0.2.1.13")
     implementation("com.google.guava:guava:28.2-jre") // for tiny-mappings-parser
     implementation("blue.endless:jankson:1.2.0-62")

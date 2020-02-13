@@ -13,6 +13,6 @@ class OpenYarn(context: ActionContext) : AbstractYarnAction("Open Yarn", context
 
             step = "Setting mappings"
             context.setMappingsAndVersion(mappings, GameVersion(version))
-            context.setAsterisk(true)
+            context.setAsterisk(false)
         }
 }
