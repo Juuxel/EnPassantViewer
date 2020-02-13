@@ -3,7 +3,7 @@ package juuxel.enpassantviewer.descriptor
 import juuxel.leafthrough.StringReader
 
 object Descriptors {
-    private val PRIMITIVES = arrayOf('I', 'S', 'J', 'B', 'C', 'D', 'F', 'Z', 'V')
+    private val PRIMITIVES = charArrayOf('I', 'S', 'J', 'B', 'C', 'D', 'F', 'Z', 'V')
 
     fun readableToDescriptor(type: String): String =
         when (type) {
