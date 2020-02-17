@@ -111,16 +111,66 @@ sealed class MappingsTreeNode : TreeNode {
     }
 
     class Method(private val parent: MappingsTreeNode, val method: MethodMapping) : MappingsTreeNode() {
+        private val children = buildChildren(this)
+
         override fun getParent() = parent
-        override fun children(): Enumeration<*> = EmptyEnumeration
-        override fun isLeaf() = true
-        override fun getChildCount() = 0
-        override fun getChildAt(childIndex: Int) = null
-        override fun getIndex(node: TreeNode?) = -1
-        override fun getAllowsChildren() = false
+        override fun children(): Enumeration<*> = children.elements()
+        override fun isLeaf() = childCount == 0
+        override fun getChildCount() = children.size
+        override fun getChildAt(childIndex: Int): TreeNode? = children[childIndex]
+        override fun getIndex(node: TreeNode) = children.indexOf(node)
+        override fun getAllowsChildren() = true
 
         override fun toString() =
             "${method.returnType} ${method.from}(${method.parameters.joinToString()}) → ${method.to}"
+
+        abstract class MethodData(private val parent: Method) : MappingsTreeNode() {
+            override fun getParent() = parent
+            override fun children(): Enumeration<*> = EmptyEnumeration
+            override fun isLeaf() = true
+            override fun getChildCount() = 0
+            override fun getChildAt(childIndex: Int) = null
+            override fun getIndex(node: TreeNode?) = -1
+            override fun getAllowsChildren() = false
+        }
+
+        class OriginalClass(parent: Method, private val originalClass: String) : MethodData(parent) {
+            override fun toString() = "Original class: $originalClass"
+        }
+
+        class Lines(
+            parent: Method,
+            private val name: String,
+            private val startLine: Int,
+            private val endLine: Int
+        ) : MethodData(parent) {
+            override fun toString() =
+                if (endLine != MethodMapping.MISSING_LINE)
+                    "$name: $startLine-$endLine (length: ${endLine - startLine + 1})"
+                else
+                    "$name: $startLine-"
+        }
+
+        companion object {
+            private fun buildChildren(method: Method): Vector<MethodData> {
+                val buffer = ArrayList<MethodData>()
+                val mapping = method.method
+
+                mapping.originalClass?.let {
+                    buffer += OriginalClass(method, it)
+                }
+
+                if (mapping.startLine != MethodMapping.MISSING_LINE) {
+                    buffer += Lines(method, "Lines", mapping.startLine, mapping.endLine)
+                }
+
+                if (mapping.originalStartLine != MethodMapping.MISSING_LINE) {
+                    buffer += Lines(method, "Original lines", mapping.originalStartLine, mapping.originalEndLine)
+                }
+
+                return Vector(buffer)
+            }
+        }
     }
 
     class Field(private val parent: MappingsTreeNode, val field: FieldMapping) : MappingsTreeNode() {
