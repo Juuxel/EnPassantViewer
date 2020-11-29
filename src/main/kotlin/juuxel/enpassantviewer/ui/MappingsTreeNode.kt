@@ -72,7 +72,7 @@ sealed class MappingsTreeNode : TreeNode {
         private val children = Vector(packageChildren + classChildren)
 
         override fun getParent() = parent
-        override fun children(): Enumeration<*> = children.elements()
+        override fun children(): Enumeration<out TreeNode> = children.elements()
         override fun getChildCount() = children.size
         override fun getChildAt(childIndex: Int): TreeNode? = children[childIndex]
         override fun getIndex(node: TreeNode) = children.indexOf(node)
@@ -100,7 +100,7 @@ sealed class MappingsTreeNode : TreeNode {
         private val children = Vector(fields + methods)
 
         override fun getParent() = parent
-        override fun children(): Enumeration<*> = children.elements()
+        override fun children(): Enumeration<out TreeNode> = children.elements()
         override fun isLeaf() = childCount == 0
         override fun getChildCount() = children.size
         override fun getChildAt(childIndex: Int): TreeNode? = children[childIndex]
@@ -126,7 +126,7 @@ sealed class MappingsTreeNode : TreeNode {
 
         abstract class MethodData(private val parent: Method) : MappingsTreeNode() {
             override fun getParent() = parent
-            override fun children(): Enumeration<*> = EmptyEnumeration
+            override fun children(): Enumeration<out TreeNode> = EmptyEnumeration
             override fun isLeaf() = true
             override fun getChildCount() = 0
             override fun getChildAt(childIndex: Int) = null
@@ -175,7 +175,7 @@ sealed class MappingsTreeNode : TreeNode {
 
     class Field(private val parent: MappingsTreeNode, val field: FieldMapping) : MappingsTreeNode() {
         override fun getParent() = parent
-        override fun children(): Enumeration<*> = EmptyEnumeration
+        override fun children(): Enumeration<out TreeNode> = EmptyEnumeration
         override fun isLeaf() = true
         override fun getChildCount() = 0
         override fun getChildAt(childIndex: Int) = null
