@@ -114,7 +114,7 @@ sealed class MappingsTreeNode : TreeNode {
         private val children = buildChildren(this)
 
         override fun getParent() = parent
-        override fun children(): Enumeration<*> = children.elements()
+        override fun children(): Enumeration<out TreeNode> = children.elements()
         override fun isLeaf() = childCount == 0
         override fun getChildCount() = children.size
         override fun getChildAt(childIndex: Int): TreeNode? = children[childIndex]
